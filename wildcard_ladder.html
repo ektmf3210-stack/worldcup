@@ -125,7 +125,8 @@
 
   <p class="foot">
     <b>색 의미</b> · 각 조 결과 칩 = 그 조 3위가 한국보다 🔴위 / 🟢아래 / 🟡동률. 한국 기준선: 3점·−1·2득점. <b>위로 4팀 더 들어오면 9위=탈락.</b><br>
-    현재 순위는 6/25 기준 실제 경기 결과 반영. 정렬: 승점→골득실→다득점→(이후 페어플레이·추첨). 무승부는 골차 미반영, 승리는 고른 골차만큼 골득실 반영. 정밀 경우의 수는 FIFA 공식도 참고.
+    현재 순위는 6/25 기준 실제 경기 결과 반영. 정렬: 승점→골득실→다득점→(이후 페어플레이·추첨). 무승부는 골차 미반영, 승리는 고른 골차만큼 양 팀 골득실 반영. 정밀 경우의 수는 FIFA 공식도 참고.<br>
+    <span style="opacity:.8">※ 1·2위가 확정적인 조에서 <b>최약체(0점)가 1위를 2골차 이상 대파</b>하는 초저확률 시나리오는 단순화를 위해 미반영. (예: 요르단이 아르헨티나 2골차 격파) 실제 영향 거의 없음.</span>
   </p>
 </div>
 
@@ -139,7 +140,7 @@ const GROUPS = [
   {g:'D',teams:[['미국',6,5,6],['호주',3,0,2],['파라과이',3,-2,2],['튀르키예',0,-3,0]],
     matches:[{a:'호주',b:'파라과이'}]},
   {g:'E',teams:[['독일',6,7,9],['코트디부아르',3,0,2],['에콰도르',1,-1,0],['퀴라소',1,-6,1]],
-    matches:[{a:'에콰도르',b:'독일'}]},
+    matches:[{a:'에콰도르',b:'독일'},{a:'코트디부아르',b:'퀴라소'}]},
   {g:'F',teams:[['네덜란드',4,4,7],['일본',4,4,6],['스웨덴',3,0,6],['튀니지',0,-8,1]],
     matches:[{a:'일본',b:'스웨덴'}]},
   {g:'G',teams:[['이집트',4,2,4],['이란',2,0,2],['벨기에',2,0,1],['뉴질랜드',1,-2,3]],
@@ -173,19 +174,22 @@ function thirdOf(grp, states){
   grp.matches.forEach((m,i)=>{
     const st=states[i], A=find(m.a), B=find(m.b);
     if(st.sel==='d'){A.pt+=1;B.pt+=1;}
-    else{const W=st.sel==='a'?A:B; W.pt+=3; W.gd+=st.mar; W.gf+=st.mar;}
+    else{const W=st.sel==='a'?A:B, Lz=st.sel==='a'?B:A; W.pt+=3; W.gd+=st.mar; W.gf+=st.mar; Lz.gd-=st.mar;}
   });
   t.sort(rankCmp);
   return t[2];
 }
 function curThird(grp){ return grp.lock?grp.third:thirdOf(grp, grp.matches); }
 
-function combos(n){
+function combos(n){ // n개 경기, 무+승(골차1·2·3)
   let res=[[]];
-  for(let i=0;i<n;i++){ const nx=[]; res.forEach(c=>['a','d','b'].forEach(s=>nx.push(c.concat([{sel:s,mar:1}])))); res=nx; }
+  for(let i=0;i<n;i++){ const nx=[]; res.forEach(c=>{
+    nx.push(c.concat([{sel:'d',mar:1}]));
+    ['a','b'].forEach(s=>[1,2,3].forEach(mr=>nx.push(c.concat([{sel:s,mar:mr}]))));
+  }); res=nx; }
   return res;
 }
-function bestStates(grp){
+function bestStates(grp){ // 그 조 3위를 가장 낮게(한국 유리)
   let best=null,bestT=null;
   combos(grp.matches.length).forEach(c=>{ const t=thirdOf(grp,c);
     if(!bestT||rankCmp(t,bestT)>0){bestT=t;best=c;} });

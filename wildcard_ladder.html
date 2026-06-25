@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>한국 32강 시뮬레이터 · 버튼 눌러보기</title>
+<title>한국 32강 시뮬레이터 · 점수차까지</title>
 <style>
   :root{
     --bg:#EEF3EC; --card:#FFFFFF; --card-2:#F6F9F5;
@@ -26,6 +26,9 @@
   h1{font-size:clamp(22px,5.4vw,32px);font-weight:850;letter-spacing:-.02em;line-height:1.12}
   h1 .dim{color:var(--muted);font-weight:650}
   .sub{color:var(--ink-2);font-size:13.5px;margin-top:9px}
+  .glos{font-size:12px;color:var(--ink-2);background:#FBF7E8;border:1px solid #EADFBE;
+    border-radius:9px;padding:9px 12px;margin-top:11px;line-height:1.55}
+  .glos b{color:var(--ink)}
   .status{margin:18px 0 12px;border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);
     border:1px solid var(--line);transition:.3s}
   .status.in{background:linear-gradient(180deg,#EAF7EF,#fff);border-color:#BAE3C8}
@@ -62,6 +65,9 @@
   .pbtn.best{color:var(--safe)} .pbtn.best:hover{border-color:var(--safe-bar);background:var(--safe-bg)}
   .pbtn.worst{color:var(--danger)} .pbtn.worst:hover{border-color:var(--danger-bar);background:var(--danger-bg)}
   .saved{font-family:var(--mono);font-size:11px;color:var(--muted);align-self:center;margin-left:4px}
+  .tip{font-size:12px;color:var(--ink-2);background:var(--card-2);border:1px solid var(--line-soft);
+    border-left:3px solid var(--blue-bar);border-radius:9px;padding:9px 12px;margin:0 0 10px;line-height:1.55}
+  .tip b{color:var(--ink)}
   .matches{display:flex;flex-direction:column;gap:10px}
   .mc{border:1px solid var(--line);border-radius:13px;background:var(--card);box-shadow:var(--shadow);padding:12px 14px}
   .mc-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
@@ -80,6 +86,13 @@
   .opt.on.aboveSel{background:var(--danger);border-color:var(--danger)}
   .opt.on.belowSel{background:var(--safe);border-color:var(--safe)}
   .opt.on.tieSel{background:var(--amber-bar);border-color:var(--amber-bar)}
+  .margin{display:flex;align-items:center;gap:7px;margin-top:8px;padding-top:9px;border-top:1px dashed var(--line)}
+  .margin .lab{font-size:11.5px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .mopts{display:flex;gap:6px;flex:1}
+  .mopt{flex:1;font-family:var(--sans);font-weight:700;font-size:12px;border-radius:8px;padding:7px 4px;cursor:pointer;
+    border:1px solid var(--line);background:#fff;color:var(--ink-2);text-align:center;transition:.12s}
+  .mopt:hover{border-color:var(--muted)}
+  .mopt.on{background:var(--blue);color:#fff;border-color:var(--blue)}
   .foot{margin-top:20px;font-size:11px;color:var(--muted);line-height:1.7}
   .foot b{color:var(--ink-2)}
   @media (max-width:520px){.lrow{grid-template-columns:20px 84px 1fr auto}.lname{font-size:12px}}
@@ -87,16 +100,18 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">2026 월드컵 · 한국 32강 시뮬레이터</div>
+  <div class="eyebrow">2026 월드컵 · 한국 32강 시뮬레이터 (점수차판)</div>
   <h1>버튼 눌러서 한국 운명 굴려보기 <span class="dim">🇰🇷</span></h1>
-  <p class="sub">한국은 A조 3위(승점 3·골득실 −1). 12개 조 3위 중 <b>위 8팀</b>만 32강. 아래 경기들 <b>승·무·패만 눌러보면</b> 한국이 사는지 죽는지 바로 뜬다. 처음 세팅은 <b>한국 베스트 시나리오</b>.</p>
+  <p class="sub">한국은 A조 3위(승점 3·골득실 −1·2득점). 12개 조 3위 중 <b>위 8팀</b>만 32강. 경기 <b>승·무·패 + 점수차</b>까지 눌러보면 한국 운명이 실시간으로 바뀐다. 처음 세팅은 <b>한국 베스트</b>.</p>
+  <div class="glos">📖 <b>승점</b> = 이기면 3점·비기면 1점·지면 0점 누적 &nbsp;|&nbsp; <b>골득실</b> = 넣은 골 − 먹은 골. <b>한국 = 3점·−1.</b> 다른 조 3위가 이 선을 넘으면 한국이 한 칸 밀린다.</div>
 
   <div class="status" id="status"></div>
 
   <div class="sec-t">🪜 조 3위 와일드카드 (위 8팀 생존)</div>
   <div class="ladder" id="ladder"></div>
 
-  <div class="sec-t" style="margin-top:22px">🎮 경기 결과 눌러보기 <span class="note">실제 결과 나오면 그 버튼으로 바꾸면 됨</span></div>
+  <div class="sec-t" style="margin-top:22px">🎮 경기 결과 + 점수차 <span class="note">이긴 쪽 골차까지 고르면 골득실 정밀 반영</span></div>
+  <div class="tip">💡 <b>골차 버튼</b>은 <b>진 팀이 그 조 3위가 될 때만</b> 떠. 이긴 팀은 보통 2위로 올라가 3위 경쟁에서 빠지니까 — 결과가 안 바뀌는 경우엔 골차 버튼을 숨겨놨어.</div>
   <div class="presets">
     <button class="pbtn best" id="pBest">🟢 한국 베스트로</button>
     <button class="pbtn worst" id="pWorst">🔴 최악으로</button>
@@ -105,55 +120,56 @@
   <div class="matches" id="matches"></div>
 
   <p class="foot">
-    <b>색 의미</b> · 각 경기 결과 옆 칩 = 그 조 3위가 한국보다 🔴위 / 🟢아래 / 🟡동률. 한국 기준선: 3점·−1·2득점. <b>위로 4팀 더 들어오면 9위=탈락.</b><br>
-    골득실은 '승=+1' 대표값으로 단순화(점수차 미반영), G·H조는 핵심 팀 기준으로 간략화. 와일드카드 컷 정렬: 승점→골득실→다득점. · 데이터 6/25 기준.
+    <b>색 의미</b> · 각 경기 결과 칩 = 그 조 3위가 한국보다 🔴위 / 🟢아래 / 🟡동률. 한국 기준선: 3점·−1·2득점. <b>위로 4팀 더 들어오면 9위=탈락.</b><br>
+    이긴 팀에 <b>골차(1·2·3+)</b>만큼 골득실 반영 → 동률 칼각까지 계산. <b>주의:</b> G·H조는 2·3위 스왑을 간략화함. 정렬: 승점→골득실→다득점. 정밀 경우의 수는 FIFA 공식 참고. · 데이터 6/25 기준.
   </p>
 </div>
 
 <script>
+// t(x): x = 이긴 팀 골차(1/2/3+). m:true면 골차 선택 노출(그 조 3위 골득실이 골차에 좌우됨)
 const GROUPS = [
   {g:'A',lock:true,third:{n:'대한민국',pt:3,gd:-1,gf:2,me:true}},
   {g:'B',lock:true,third:{n:'보스니아',pt:4,gd:-1,gf:3}},
   {g:'C',lock:true,third:{n:'스코틀랜드',pt:3,gd:-3,gf:2}},
-  {g:'D',match:'호주 vs 파라과이',sel:0,opts:[
-    {l:'호주 승',t:{n:'파라과이',pt:3,gd:-2,gf:1}},
-    {l:'무승부',t:{n:'파라과이',pt:4,gd:-2,gf:1}},
-    {l:'파라과이 승',t:{n:'호주',pt:3,gd:-1,gf:3}}]},
-  {g:'E',match:'에콰도르 vs 독일',sel:0,opts:[
-    {l:'독일 승',t:{n:'에콰도르',pt:1,gd:-1,gf:1}},
-    {l:'무승부',t:{n:'에콰도르',pt:2,gd:-1,gf:1}},
-    {l:'에콰도르 승',t:{n:'코트디부아르',pt:3,gd:0,gf:2}}]},
-  {g:'F',match:'일본 vs 스웨덴',sel:0,opts:[
-    {l:'일본 승',t:{n:'스웨덴',pt:3,gd:0,gf:3}},
-    {l:'무승부',t:{n:'스웨덴',pt:4,gd:0,gf:3}},
-    {l:'스웨덴 승',t:{n:'일본',pt:4,gd:4,gf:5}}]},
-  {g:'G',match:'벨기에 최종전',sel:0,opts:[
-    {l:'벨기에 패',t:{n:'벨기에',pt:2,gd:0,gf:2}},
-    {l:'무승부',t:{n:'벨기에',pt:3,gd:0,gf:2}},
-    {l:'벨기에 승',t:{n:'벨기에',pt:5,gd:1,gf:3}}]},
-  {g:'H',match:'카보베르데 최종전',sel:0,opts:[
-    {l:'카보 패',t:{n:'카보베르데',pt:2,gd:0,gf:2}},
-    {l:'무승부',t:{n:'카보베르데',pt:3,gd:0,gf:2}},
-    {l:'카보 승',t:{n:'카보베르데',pt:5,gd:1,gf:3}}]},
-  {g:'I',match:'세네갈 vs 이라크',sel:0,opts:[
-    {l:'무승부',t:{n:'세네갈',pt:1,gd:-3,gf:1}},
-    {l:'세네갈 승',t:{n:'세네갈',pt:3,gd:-2,gf:2}},
-    {l:'이라크 승',t:{n:'이라크',pt:3,gd:-5,gf:1}}]},
-  {g:'J',match:'알제리 최종전',sel:0,opts:[
-    {l:'알제리 패',t:{n:'알제리',pt:3,gd:-2,gf:2}},
-    {l:'무승부',t:{n:'알제리',pt:4,gd:-2,gf:2}},
-    {l:'알제리 승',t:{n:'오스트리아',pt:3,gd:0,gf:3}}]},
-  {g:'K',match:'콩고DR 최종전',sel:0,opts:[
-    {l:'콩고 패',t:{n:'콩고DR',pt:1,gd:-1,gf:1}},
-    {l:'무승부',t:{n:'콩고DR',pt:2,gd:-1,gf:1}},
-    {l:'콩고 승',t:{n:'콩고DR',pt:4,gd:0,gf:2}}]},
-  {g:'L',match:'크로아티아 최종전',sel:0,opts:[
-    {l:'크로 패',t:{n:'크로아티아',pt:3,gd:-1,gf:2}},
-    {l:'무승부',t:{n:'크로아티아',pt:4,gd:-1,gf:2}},
-    {l:'크로 승',t:{n:'가나',pt:4,gd:1,gf:2}}]},
+  {g:'D',match:'호주 vs 파라과이',sel:0,mar:1,opts:[
+    {l:'호주 승',m:false,t:x=>({n:'파라과이',pt:3,gd:-2,gf:1})},
+    {l:'무승부',m:false,t:x=>({n:'파라과이',pt:4,gd:-2,gf:1})},
+    {l:'파라과이 승',m:true,t:x=>({n:'호주',pt:3,gd:-x,gf:3})}]},
+  {g:'E',match:'에콰도르 vs 독일',sel:0,mar:1,opts:[
+    {l:'독일 승',m:true,t:x=>({n:'에콰도르',pt:1,gd:-1-x,gf:1})},
+    {l:'무승부',m:false,t:x=>({n:'에콰도르',pt:2,gd:-1,gf:1})},
+    {l:'에콰도르 승',m:false,t:x=>({n:'코트디부아르',pt:3,gd:0,gf:2})}]},
+  {g:'F',match:'일본 vs 스웨덴',sel:0,mar:1,opts:[
+    {l:'일본 승',m:false,t:x=>({n:'스웨덴',pt:3,gd:0,gf:3})},
+    {l:'무승부',m:false,t:x=>({n:'스웨덴',pt:4,gd:0,gf:3})},
+    {l:'스웨덴 승',m:true,t:x=>({n:'일본',pt:4,gd:4-x,gf:5})}]},
+  {g:'G',match:'벨기에 vs 뉴질랜드',sel:0,mar:1,opts:[
+    {l:'벨기에 승',m:true,t:x=>({n:'벨기에',pt:5,gd:x,gf:2+x})},
+    {l:'무승부',m:false,t:x=>({n:'벨기에',pt:3,gd:0,gf:2})},
+    {l:'뉴질랜드 승',m:true,t:x=>({n:'벨기에',pt:2,gd:-x,gf:2})}]},
+  {g:'H',match:'카보베르데 vs 우루과이',sel:0,mar:1,opts:[
+    {l:'카보 승',m:true,t:x=>({n:'카보베르데',pt:5,gd:x,gf:2+x})},
+    {l:'무승부',m:false,t:x=>({n:'카보베르데',pt:3,gd:0,gf:2})},
+    {l:'우루과이 승',m:true,t:x=>({n:'카보베르데',pt:2,gd:-x,gf:2})}]},
+  {g:'I',match:'세네갈 vs 이라크',sel:0,mar:1,opts:[
+    {l:'세네갈 승',m:true,t:x=>({n:'세네갈',pt:3,gd:-3+x,gf:1+x})},
+    {l:'무승부',m:false,t:x=>({n:'세네갈',pt:1,gd:-3,gf:1})},
+    {l:'이라크 승',m:true,t:x=>({n:'이라크',pt:3,gd:-6+x,gf:x})}]},
+  {g:'J',match:'알제리 vs 오스트리아',sel:0,mar:1,opts:[
+    {l:'오스트리아 승',m:true,t:x=>({n:'알제리',pt:3,gd:-2-x,gf:2})},
+    {l:'무승부',m:false,t:x=>({n:'알제리',pt:4,gd:-2,gf:2})},
+    {l:'알제리 승',m:true,t:x=>({n:'오스트리아',pt:3,gd:-x,gf:3})}]},
+  {g:'K',match:'콩고DR vs 우즈베키스탄',sel:0,mar:1,opts:[
+    {l:'콩고 승',m:true,t:x=>({n:'콩고DR',pt:4,gd:-1+x,gf:2})},
+    {l:'무승부',m:false,t:x=>({n:'콩고DR',pt:2,gd:-1,gf:1})},
+    {l:'우즈벡 승',m:true,t:x=>({n:'콩고DR',pt:1,gd:-1-x,gf:1})}]},
+  {g:'L',match:'크로아티아 vs 파나마',sel:0,mar:1,opts:[
+    {l:'크로 승',m:false,t:x=>({n:'가나',pt:4,gd:1,gf:2})},
+    {l:'무승부',m:false,t:x=>({n:'크로아티아',pt:4,gd:-1,gf:2})},
+    {l:'파나마 승',m:true,t:x=>({n:'크로아티아',pt:3,gd:-1-x,gf:2})}]},
 ];
 const KR={pt:3,gd:-1,gf:2};
-const KEY='kr-sim-v1';
+const KEY='kr-sim-v2';
 const fmt=n=>n>0?('+'+n):(''+n);
 
 function rankCmp(a,b){return b.pt-a.pt||b.gd-a.gd||b.gf-a.gf;}
@@ -162,21 +178,20 @@ function vsKR(t){
   if(t.gd>KR.gd)return'above'; if(t.gd<KR.gd)return'below';
   if(t.gf>KR.gf)return'above'; if(t.gf<KR.gf)return'below'; return'tie';
 }
-// 베스트=그 조 3위가 가장 낮은(한국에 유리한) 옵션
-function bestIdx(grp){let bi=0;grp.opts.forEach((o,i)=>{if(rankCmp(o.t,grp.opts[bi].t)>0)bi=i;});return bi;}
-function worstIdx(grp){let wi=0;grp.opts.forEach((o,i)=>{if(rankCmp(o.t,grp.opts[wi].t)<0)wi=i;});return wi;}
-function curThird(grp){return grp.lock?grp.third:grp.opts[grp.sel].t;}
+function bestIdx(grp){let bi=0;grp.opts.forEach((o,i)=>{if(rankCmp(o.t(1),grp.opts[bi].t(1))>0)bi=i;});return bi;}
+function worstIdx(grp){let wi=0;grp.opts.forEach((o,i)=>{if(rankCmp(o.t(1),grp.opts[wi].t(1))<0)wi=i;});return wi;}
+function curThird(grp){return grp.lock?grp.third:grp.opts[grp.sel].t(grp.mar||1);}
 
 async function load(){
   try{if(window.storage){const r=await window.storage.get(KEY);if(r&&r.value){const s=JSON.parse(r.value);
-    GROUPS.forEach(g=>{if(!g.lock&&s[g.g]!=null)g.sel=s[g.g];});}else setBest();}else setBest();}
+    GROUPS.forEach(g=>{if(!g.lock&&s[g.g]){g.sel=s[g.g].sel;g.mar=s[g.g].mar||1;}});}else setBest();}else setBest();}
   catch(e){setBest();}
   render();
 }
-function setBest(){GROUPS.forEach(g=>{if(!g.lock)g.sel=bestIdx(g);});}
+function setBest(){GROUPS.forEach(g=>{if(!g.lock){g.sel=bestIdx(g);g.mar=1;}});}
 let flashT;
 async function save(){
-  const s={};GROUPS.forEach(g=>{if(!g.lock)s[g.g]=g.sel;});
+  const s={};GROUPS.forEach(g=>{if(!g.lock)s[g.g]={sel:g.sel,mar:g.mar||1};});
   try{if(window.storage){await window.storage.set(KEY,JSON.stringify(s));flash('저장됨 ✓');}}catch(e){flash('이 세션만');}
 }
 function flash(m){const e=document.getElementById('saved');e.textContent=m;clearTimeout(flashT);flashT=setTimeout(()=>e.textContent='',1400);}
@@ -215,32 +230,44 @@ function renderStatusLadder(){
 function renderMatches(){
   const host=document.getElementById('matches');host.innerHTML='';
   GROUPS.filter(g=>!g.lock).forEach(grp=>{
-    const sel=grp.opts[grp.sel], rel=vsKR(sel.t);
+    const opt=grp.opts[grp.sel], sel=opt.t(grp.mar||1), rel=vsKR(sel);
     const relTxt=rel==='above'?'🔴 한국 위':rel==='below'?'🟢 한국 아래':'🟡 한국과 동률';
     let opts='';
     grp.opts.forEach((o,i)=>{
-      const on=i===grp.sel;
-      const r=vsKR(o.t);
+      const on=i===grp.sel; const r=vsKR(o.t(on?(grp.mar||1):1));
       const onCls=on?('on '+(r==='above'?'aboveSel':r==='below'?'belowSel':'tieSel')):'';
       opts+=`<button class="opt ${onCls}" data-g="${grp.g}" data-i="${i}">${o.l}</button>`;
     });
+    let marginRow='';
+    if(opt.m){
+      const labs=['1골차','2골차','3골+'];
+      let mo='';
+      [1,2,3].forEach(v=>{ mo+=`<button class="mopt ${(grp.mar||1)===v?'on':''}" data-g="${grp.g}" data-m="${v}">${labs[v-1]}</button>`; });
+      marginRow=`<div class="margin"><span class="lab">이긴 쪽 골차</span><div class="mopts">${mo}</div></div>`;
+    }
     const card=document.createElement('div');card.className='mc';
     card.innerHTML=`<div class="mc-top"><span class="gbadge">${grp.g}</span>
       <span class="mtitle">${grp.match}</span>
-      <span class="res ${rel}">→ ${sel.t.n} ${sel.t.pt}점·${fmt(sel.t.gd)} · ${relTxt}</span></div>
-      <div class="opts">${opts}</div>`;
+      <span class="res ${rel}">→ ${sel.n} ${sel.pt}점·득실${fmt(sel.gd)} · ${relTxt}</span></div>
+      <div class="opts">${opts}</div>${marginRow}`;
     host.appendChild(card);
   });
   host.querySelectorAll('.opt').forEach(b=>{
     b.addEventListener('click',e=>{
       const g=e.target.dataset.g,i=+e.target.dataset.i;
-      const grp=GROUPS.find(x=>x.g===g);grp.sel=i;save();render();
+      const grp=GROUPS.find(x=>x.g===g);grp.sel=i;grp.mar=1;save();render();
+    });
+  });
+  host.querySelectorAll('.mopt').forEach(b=>{
+    b.addEventListener('click',e=>{
+      const g=e.target.dataset.g,m=+e.target.dataset.m;
+      const grp=GROUPS.find(x=>x.g===g);grp.mar=m;save();render();
     });
   });
 }
 
-document.getElementById('pBest').addEventListener('click',()=>{GROUPS.forEach(g=>{if(!g.lock)g.sel=bestIdx(g);});save();render();flash('베스트 적용');});
-document.getElementById('pWorst').addEventListener('click',()=>{GROUPS.forEach(g=>{if(!g.lock)g.sel=worstIdx(g);});save();render();flash('최악 적용');});
+document.getElementById('pBest').addEventListener('click',()=>{GROUPS.forEach(g=>{if(!g.lock){g.sel=bestIdx(g);g.mar=1;}});save();render();flash('베스트 적용');});
+document.getElementById('pWorst').addEventListener('click',()=>{GROUPS.forEach(g=>{if(!g.lock){g.sel=worstIdx(g);g.mar=1;}});save();render();flash('최악 적용');});
 load();
 </script>
 </body>

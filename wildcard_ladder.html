@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026 월드컵 · 조 3위 와일드카드 사다리</title>
+<title>한국 32강 시뮬레이터 · 버튼 눌러보기</title>
 <style>
   :root{
     --bg:#EEF3EC; --card:#FFFFFF; --card-2:#F6F9F5;
@@ -12,238 +12,235 @@
     --safe:#15803D; --safe-bg:#E7F5EC; --safe-bar:#34B36A;
     --amber:#B45309; --amber-bg:#FBEFD6; --amber-bar:#E08A1E;
     --danger:#C0392B; --danger-bg:#FBE7E4; --danger-bar:#E0796B;
-    --korea:#1D4ED8; --korea-bg:#E4EBFB; --korea-bar:#2563EB;
+    --blue:#1D4ED8; --blue-bg:#E4EBFB; --blue-bar:#2563EB;
     --sans:system-ui,-apple-system,'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
     --mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
     --shadow:0 1px 2px rgba(20,40,28,.04),0 6px 18px rgba(20,40,28,.06);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.45;
-    -webkit-font-smoothing:antialiased;padding:24px 14px 64px}
-  .wrap{max-width:880px;margin:0 auto}
-  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--safe);margin-bottom:9px;font-weight:700}
-  h1{font-size:clamp(21px,5vw,30px);font-weight:850;letter-spacing:-.02em;line-height:1.1}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;padding:24px 14px 60px}
+  .wrap{max-width:780px;margin:0 auto}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--safe);font-weight:700;margin-bottom:9px}
+  h1{font-size:clamp(22px,5.4vw,32px);font-weight:850;letter-spacing:-.02em;line-height:1.12}
   h1 .dim{color:var(--muted);font-weight:650}
-  .sub{color:var(--ink-2);font-size:13px;margin-top:8px}
-  .hero{margin:18px 0 14px;border:1px solid var(--line);border-radius:18px;background:var(--card);
-    box-shadow:var(--shadow);padding:20px 20px 18px}
-  .hero .cap{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-  .hero .cap h2{font-size:17px;font-weight:850;letter-spacing:-.01em}
-  .hero .cap .rule{font-size:12px;color:var(--muted);font-family:var(--mono)}
-  .hero .lead{font-size:12.5px;color:var(--ink-2);margin-bottom:14px}
-  .hero .lead b{color:var(--ink)}
-  .ladder{display:flex;flex-direction:column;gap:3px}
-  .lrow{display:grid;grid-template-columns:26px 116px 1fr auto;gap:10px;align-items:center;
-    padding:5px 8px;border-radius:9px}
-  .lrow .lrk{font-family:var(--mono);font-weight:800;font-size:13px;text-align:center;color:var(--muted)}
-  .lrow .lname{font-size:13.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lrow .lname .grp{font-family:var(--mono);font-size:10px;color:var(--muted);margin-left:3px}
-  .bar-track{height:16px;background:var(--card-2);border-radius:8px;overflow:hidden;border:1px solid var(--line-soft)}
-  .bar-fill{height:100%;border-radius:8px;transition:width .35s ease}
-  .lval{font-family:var(--mono);font-size:12.5px;font-weight:700;white-space:nowrap;text-align:right;min-width:62px}
+  .sub{color:var(--ink-2);font-size:13.5px;margin-top:9px}
+  .status{margin:18px 0 12px;border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);
+    border:1px solid var(--line);transition:.3s}
+  .status.in{background:linear-gradient(180deg,#EAF7EF,#fff);border-color:#BAE3C8}
+  .status.out{background:linear-gradient(180deg,#FCEBE8,#fff);border-color:#F3C7BF}
+  .status .row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .status .verdict{font-size:clamp(30px,8vw,44px);font-weight:880;letter-spacing:-.02em;line-height:1}
+  .status.in .verdict{color:var(--safe)} .status.out .verdict{color:var(--danger)}
+  .status .rk{font-family:var(--mono);font-size:15px;font-weight:800;color:var(--ink-2)}
+  .status .rk b{font-size:24px;color:var(--ink)}
+  .status .desc{font-size:12.5px;color:var(--ink-2);margin-top:9px}
+  .status .desc b{color:var(--ink)}
+  .sec-t{font-size:14px;font-weight:850;margin:22px 0 10px;color:var(--ink);display:flex;align-items:baseline;gap:8px}
+  .sec-t .note{font-weight:600;font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+  .ladder{border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);padding:11px 14px}
+  .lrow{display:grid;grid-template-columns:22px 96px 1fr auto;gap:9px;align-items:center;padding:3.5px 4px;border-radius:8px;transition:.25s}
+  .lrk{font-family:var(--mono);font-weight:800;font-size:12px;text-align:center;color:var(--muted)}
+  .lname{font-size:12.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lname .g{font-family:var(--mono);font-size:9.5px;color:var(--muted);margin-left:3px}
+  .track{height:13px;background:var(--card-2);border:1px solid var(--line-soft);border-radius:7px;overflow:hidden}
+  .fill{height:100%;border-radius:7px;transition:width .35s ease}
+  .lval{font-family:var(--mono);font-size:11.5px;font-weight:700;text-align:right;min-width:54px}
   .lval .gd{color:var(--muted);font-weight:600}
-  .lrow.safe .lrk{color:var(--safe)} .lrow.safe .bar-fill{background:var(--safe-bar)}
-  .lrow.below .lrk{color:var(--danger)} .lrow.below .lname{color:var(--danger)}
-  .lrow.below .bar-fill{background:var(--danger-bar)} .lrow.below{opacity:.85}
-  .lrow.me{background:var(--korea-bg);box-shadow:0 0 0 2px var(--korea-bar) inset}
-  .lrow.me .lrk,.lrow.me .lname{color:var(--korea);font-weight:850}
-  .lrow.me .bar-fill{background:var(--korea-bar)}
-  .lrow.me .lname::after{content:" ← 한국";font-size:11px;color:var(--korea);font-weight:800;font-family:var(--mono)}
-  .cut{display:flex;align-items:center;gap:10px;margin:6px 0;padding:0 4px}
-  .cut .lbl{font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--amber);white-space:nowrap}
-  .cut .dash{flex:1;height:0;border-top:2px dashed var(--amber-bar)}
-  .punch{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--card-2);
-    border:1px solid var(--line);border-left:4px solid var(--korea-bar);font-size:15px;font-weight:750;
-    line-height:1.5;color:var(--ink)}
-  .punch b.safe{color:var(--safe)} .punch b.out{color:var(--danger)} .punch b.k{color:var(--korea)}
-  .direct{margin-top:16px;border-top:1px solid var(--line-soft);padding-top:14px}
-  .dtitle{font-size:13px;font-weight:800;margin-bottom:11px;color:var(--ink)}
-  .dtitle span{font-weight:600;color:var(--muted);font-size:11px;margin-left:4px}
-  .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:7px 16px}
-  .drow{display:flex;align-items:center;gap:8px;font-size:12.5px}
-  .dgl{font-family:var(--mono);font-weight:800;font-size:11px;width:20px;height:20px;line-height:20px;
-    text-align:center;border-radius:5px;border:1px solid var(--line);color:var(--muted);background:#fff;flex:none}
-  .dteam{color:var(--ink-2)} .dteam.ok{color:var(--safe);font-weight:750}
-  .drow i{color:#B9C7BC;font-style:normal}
-  .controls{display:flex;align-items:center;gap:10px;margin:16px 0 4px;flex-wrap:wrap}
-  button.btn{font-family:var(--sans);font-weight:700;font-size:13px;color:var(--ink);background:var(--card);
-    border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;transition:.15s;box-shadow:var(--shadow)}
-  button.btn:hover{border-color:var(--safe);color:var(--safe)}
-  .saved{font-family:var(--mono);font-size:11px;color:var(--muted)}
-  .hint{font-size:12px;color:var(--muted);margin-left:auto}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px;margin-top:14px}
-  @media (max-width:880px){.grid{grid-template-columns:1fr}}
-  .card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
-  .card-h{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line-soft);background:var(--card-2)}
-  .gl{font-family:var(--mono);font-weight:800;font-size:13px;width:26px;height:26px;line-height:26px;text-align:center;
-    border-radius:7px;border:1px solid var(--line);color:var(--ink);background:#fff}
-  .card-h .ti{font-weight:750;font-size:13.5px}
-  .donebtn{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;
-    color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:5px 9px;cursor:pointer;background:#fff}
-  .donebtn.on{color:var(--safe);border-color:#BAE3C8;background:var(--safe-bg)}
-  table{width:100%;border-collapse:collapse}
-  thead th{font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
-    font-weight:700;text-align:center;padding:7px 3px}
-  thead th.l{text-align:left;padding-left:12px}
-  tbody td{border-top:1px solid var(--line-soft);padding:6px 4px;vertical-align:middle}
-  td.pos{text-align:center;width:24px;position:relative}
-  td.pos::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent}
-  tr.p1 td.pos::before,tr.p2 td.pos::before{background:var(--safe-bar)}
-  tr.p3 td.pos::before{background:var(--amber-bar)}
-  tr.p4 td.pos::before{background:var(--danger-bar)}
-  tr.p1,tr.p2{background:var(--safe-bg)}tr.p3{background:var(--amber-bg)}tr.p4{background:var(--danger-bg)}
-  tr.me{background:var(--korea-bg)!important}tr.me td.pos::before{background:var(--korea-bar)!important;width:4px}
-  .rkn{font-family:var(--mono);font-weight:800;font-size:12.5px;color:var(--ink)}tr.p4 .rkn{color:var(--danger)}
-  .team{background:transparent;border:1px solid transparent;color:var(--ink);font-family:var(--sans);
-    font-size:13px;font-weight:650;width:100%;padding:3px 5px;border-radius:6px;min-width:68px}
-  tr.me .team{font-weight:850;color:var(--korea)}
-  .team:focus{outline:none;border-color:var(--line);background:#fff}
-  .qtag{font-family:var(--mono);font-size:8.5px;font-weight:800;padding:1px 5px;border-radius:4px;margin-left:5px}
-  .qtag.in{color:var(--safe);background:var(--safe-bg);border:1px solid #BAE3C8}
-  .qtag.out{color:var(--danger);background:var(--danger-bg);border:1px solid #F3C7BF}
-  .qtag.me{color:var(--korea);background:var(--korea-bg);border:1px solid #BBCBF6}
-  .num{width:42px;text-align:center;background:var(--card-2);border:1px solid var(--line);border-radius:7px;
-    color:var(--ink);font-family:var(--mono);font-weight:700;font-size:12.5px;padding:5px 0}
-  .num:focus{outline:none;border-color:var(--safe);background:#fff}
-  td.c{text-align:center;width:48px}.num.pts{font-weight:800}
-  .foot{margin-top:20px;font-size:11.5px;color:var(--muted);line-height:1.7}.foot b{color:var(--ink-2)}
-  @media (max-width:520px){
-    .lrow{grid-template-columns:22px 92px 1fr auto;gap:7px}.lname{font-size:12.5px}
-    .num{width:38px}.team{font-size:12.5px}
-  }
+  .lrow.safe .lrk{color:var(--safe)} .lrow.safe .fill{background:var(--safe-bar)}
+  .lrow.below .lrk,.lrow.below .lname{color:var(--danger)} .lrow.below .fill{background:var(--danger-bar)} .lrow.below{opacity:.85}
+  .lrow.me{background:var(--blue-bg);box-shadow:0 0 0 2px var(--blue-bar) inset}
+  .lrow.me .lrk,.lrow.me .lname{color:var(--blue);font-weight:850} .lrow.me .fill{background:var(--blue-bar)}
+  .lrow.me .lname::after{content:" ← 한국";font-size:10.5px;color:var(--blue);font-weight:800;font-family:var(--mono)}
+  .cut{display:flex;align-items:center;gap:9px;margin:4px 2px}
+  .cut .l{font-family:var(--mono);font-size:10.5px;font-weight:800;color:var(--amber);white-space:nowrap}
+  .cut .d{flex:1;height:0;border-top:2px dashed var(--amber-bar)}
+  .presets{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 2px}
+  .pbtn{font-family:var(--sans);font-weight:750;font-size:12.5px;border-radius:10px;padding:8px 13px;cursor:pointer;
+    border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow);transition:.15s}
+  .pbtn.best{color:var(--safe)} .pbtn.best:hover{border-color:var(--safe-bar);background:var(--safe-bg)}
+  .pbtn.worst{color:var(--danger)} .pbtn.worst:hover{border-color:var(--danger-bar);background:var(--danger-bg)}
+  .saved{font-family:var(--mono);font-size:11px;color:var(--muted);align-self:center;margin-left:4px}
+  .matches{display:flex;flex-direction:column;gap:10px}
+  .mc{border:1px solid var(--line);border-radius:13px;background:var(--card);box-shadow:var(--shadow);padding:12px 14px}
+  .mc-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
+  .gbadge{font-family:var(--mono);font-weight:800;font-size:11px;width:22px;height:22px;line-height:22px;
+    text-align:center;border-radius:6px;border:1px solid var(--line);color:var(--muted);background:#fff;flex:none}
+  .mtitle{font-weight:750;font-size:14px}
+  .res{margin-left:auto;font-family:var(--mono);font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .res.above{color:var(--danger);background:var(--danger-bg);border:1px solid #F3C7BF}
+  .res.below{color:var(--safe);background:var(--safe-bg);border:1px solid #BAE3C8}
+  .res.tie{color:var(--amber);background:var(--amber-bg);border:1px solid #F3DEB0}
+  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .opt{font-family:var(--sans);font-weight:700;font-size:12.5px;border-radius:9px;padding:9px 4px;cursor:pointer;
+    border:1px solid var(--line);background:var(--card-2);color:var(--ink-2);text-align:center;transition:.12s}
+  .opt:hover{border-color:var(--muted)}
+  .opt.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .opt.on.aboveSel{background:var(--danger);border-color:var(--danger)}
+  .opt.on.belowSel{background:var(--safe);border-color:var(--safe)}
+  .opt.on.tieSel{background:var(--amber-bar);border-color:var(--amber-bar)}
+  .foot{margin-top:20px;font-size:11px;color:var(--muted);line-height:1.7}
+  .foot b{color:var(--ink-2)}
+  @media (max-width:520px){.lrow{grid-template-columns:20px 84px 1fr auto}.lname{font-size:12px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="eyebrow">2026 월드컵 · 32강 와일드카드</div>
-  <h1>조 3위들의 8장 쟁탈전 <span class="dim">/ 한국 생존 보드</span></h1>
-  <p class="sub">각 조 1·2위는 32강 직행. 나머지 8자리는 <b>12개 조 3위</b>가 나눠 갖는다. 한국은 A조 3위라 이 싸움에 들어가 있다.</p>
-  <div class="hero">
-    <div class="cap">
-      <h2>🪜 조 3위 12팀 → 위 8팀만 32강</h2>
-      <span class="rule">정렬: 승점 → 골득실 → 다득점</span>
-    </div>
-    <div class="lead">막대가 길수록 승점이 높다. <b>점선 위 8팀이 생존</b>, 아래 4팀은 탈락. 파란 줄이 한국.</div>
-    <div class="ladder" id="ladder"></div>
-    <div class="punch" id="punch"></div>
-    <div class="direct" id="direct"></div>
-  </div>
-  <div class="controls">
-    <button class="btn" id="reset">현재(6/25) 데이터로 초기화</button>
+  <div class="eyebrow">2026 월드컵 · 한국 32강 시뮬레이터</div>
+  <h1>버튼 눌러서 한국 운명 굴려보기 <span class="dim">🇰🇷</span></h1>
+  <p class="sub">한국은 A조 3위(승점 3·골득실 −1). 12개 조 3위 중 <b>위 8팀</b>만 32강. 아래 경기들 <b>승·무·패만 눌러보면</b> 한국이 사는지 죽는지 바로 뜬다. 처음 세팅은 <b>한국 베스트 시나리오</b>.</p>
+
+  <div class="status" id="status"></div>
+
+  <div class="sec-t">🪜 조 3위 와일드카드 (위 8팀 생존)</div>
+  <div class="ladder" id="ladder"></div>
+
+  <div class="sec-t" style="margin-top:22px">🎮 경기 결과 눌러보기 <span class="note">실제 결과 나오면 그 버튼으로 바꾸면 됨</span></div>
+  <div class="presets">
+    <button class="pbtn best" id="pBest">🟢 한국 베스트로</button>
+    <button class="pbtn worst" id="pWorst">🔴 최악으로</button>
     <span class="saved" id="saved"></span>
-    <span class="hint">↓ 아래 조별 표에서 결과를 고치면 위 사다리가 다시 그려짐</span>
   </div>
-  <div class="grid" id="grid"></div>
+  <div class="matches" id="matches"></div>
+
   <p class="foot">
-    <b>입력 예</b> · 스웨덴이 일본을 2-0으로 꺾으면 → 스웨덴 승점 3→6·득실 0→+2, 일본 득실 +4→+2. 일본이 F조 3위(4점)로 떨어지며 사다리 위쪽에 끼고, 한국이 한 칸 밀린다.<br>
-    <b>주의</b> · 같은 조 동점은 FIFA 2026 규정상 승자승(상호전적)이 득실보다 우선이라, 합산 스탯만 받는 이 표와 다를 수 있다(조 간 3위 비교는 정확). · 데이터 6/25 기준.
+    <b>색 의미</b> · 각 경기 결과 옆 칩 = 그 조 3위가 한국보다 🔴위 / 🟢아래 / 🟡동률. 한국 기준선: 3점·−1·2득점. <b>위로 4팀 더 들어오면 9위=탈락.</b><br>
+    골득실은 '승=+1' 대표값으로 단순화(점수차 미반영), G·H조는 핵심 팀 기준으로 간략화. 와일드카드 컷 정렬: 승점→골득실→다득점. · 데이터 6/25 기준.
   </p>
 </div>
+
 <script>
-const DEFAULT = [
-  {g:'A',done:true,teams:[{t:'멕시코',pt:9,gd:6,gf:7},{t:'남아공',pt:4,gd:-1,gf:3},{t:'대한민국',pt:3,gd:-1,gf:2,me:true},{t:'체코',pt:1,gd:-4,gf:2}]},
-  {g:'B',done:true,teams:[{t:'스위스',pt:7,gd:4,gf:6},{t:'캐나다',pt:4,gd:5,gf:7},{t:'보스니아',pt:4,gd:-1,gf:3},{t:'카타르',pt:1,gd:-8,gf:2}]},
-  {g:'C',done:true,teams:[{t:'브라질',pt:7,gd:6,gf:8},{t:'모로코',pt:7,gd:3,gf:6},{t:'스코틀랜드',pt:3,gd:-3,gf:2},{t:'아이티',pt:0,gd:-6,gf:2}]},
-  {g:'D',done:false,teams:[{t:'미국',pt:6,gd:5,gf:6,q:'in'},{t:'오스트레일리아',pt:3,gd:0,gf:3},{t:'파라과이',pt:3,gd:-2,gf:1},{t:'튀르키예',pt:0,gd:-3,gf:1}]},
-  {g:'E',done:false,teams:[{t:'독일',pt:6,gd:7,gf:8,q:'in'},{t:'코트디부아르',pt:3,gd:0,gf:2},{t:'에콰도르',pt:1,gd:-1,gf:1},{t:'퀴라소',pt:1,gd:-6,gf:1}]},
-  {g:'F',done:false,teams:[{t:'네덜란드',pt:4,gd:4,gf:5},{t:'일본',pt:4,gd:4,gf:5},{t:'스웨덴',pt:3,gd:0,gf:3},{t:'튀니지',pt:0,gd:-8,gf:0}]},
-  {g:'G',done:false,teams:[{t:'이집트',pt:4,gd:2,gf:3},{t:'이란',pt:2,gd:0,gf:2},{t:'벨기에',pt:2,gd:0,gf:2},{t:'뉴질랜드',pt:1,gd:-2,gf:1}]},
-  {g:'H',done:false,teams:[{t:'스페인',pt:4,gd:4,gf:5},{t:'우루과이',pt:2,gd:0,gf:2},{t:'카보베르데',pt:2,gd:0,gf:2},{t:'사우디아라비아',pt:1,gd:-4,gf:1}]},
-  {g:'I',done:false,teams:[{t:'프랑스',pt:6,gd:5,gf:6,q:'in'},{t:'노르웨이',pt:6,gd:4,gf:5,q:'in'},{t:'세네갈',pt:0,gd:-3,gf:1},{t:'이라크',pt:0,gd:-6,gf:0}]},
-  {g:'J',done:false,teams:[{t:'아르헨티나',pt:6,gd:5,gf:6,q:'in'},{t:'오스트리아',pt:3,gd:0,gf:3},{t:'알제리',pt:3,gd:-2,gf:2},{t:'요르단',pt:0,gd:-3,gf:1}]},
-  {g:'K',done:false,teams:[{t:'콜롬비아',pt:6,gd:3,gf:4,q:'in'},{t:'포르투갈',pt:4,gd:5,gf:7},{t:'콩고DR',pt:1,gd:-1,gf:1},{t:'우즈베키스탄',pt:0,gd:-7,gf:0}]},
-  {g:'L',done:false,teams:[{t:'잉글랜드',pt:4,gd:2,gf:3},{t:'가나',pt:4,gd:1,gf:2},{t:'크로아티아',pt:3,gd:-1,gf:2},{t:'파나마',pt:0,gd:-2,gf:1}]},
+const GROUPS = [
+  {g:'A',lock:true,third:{n:'대한민국',pt:3,gd:-1,gf:2,me:true}},
+  {g:'B',lock:true,third:{n:'보스니아',pt:4,gd:-1,gf:3}},
+  {g:'C',lock:true,third:{n:'스코틀랜드',pt:3,gd:-3,gf:2}},
+  {g:'D',match:'호주 vs 파라과이',sel:0,opts:[
+    {l:'호주 승',t:{n:'파라과이',pt:3,gd:-2,gf:1}},
+    {l:'무승부',t:{n:'파라과이',pt:4,gd:-2,gf:1}},
+    {l:'파라과이 승',t:{n:'호주',pt:3,gd:-1,gf:3}}]},
+  {g:'E',match:'에콰도르 vs 독일',sel:0,opts:[
+    {l:'독일 승',t:{n:'에콰도르',pt:1,gd:-1,gf:1}},
+    {l:'무승부',t:{n:'에콰도르',pt:2,gd:-1,gf:1}},
+    {l:'에콰도르 승',t:{n:'코트디부아르',pt:3,gd:0,gf:2}}]},
+  {g:'F',match:'일본 vs 스웨덴',sel:0,opts:[
+    {l:'일본 승',t:{n:'스웨덴',pt:3,gd:0,gf:3}},
+    {l:'무승부',t:{n:'스웨덴',pt:4,gd:0,gf:3}},
+    {l:'스웨덴 승',t:{n:'일본',pt:4,gd:4,gf:5}}]},
+  {g:'G',match:'벨기에 최종전',sel:0,opts:[
+    {l:'벨기에 패',t:{n:'벨기에',pt:2,gd:0,gf:2}},
+    {l:'무승부',t:{n:'벨기에',pt:3,gd:0,gf:2}},
+    {l:'벨기에 승',t:{n:'벨기에',pt:5,gd:1,gf:3}}]},
+  {g:'H',match:'카보베르데 최종전',sel:0,opts:[
+    {l:'카보 패',t:{n:'카보베르데',pt:2,gd:0,gf:2}},
+    {l:'무승부',t:{n:'카보베르데',pt:3,gd:0,gf:2}},
+    {l:'카보 승',t:{n:'카보베르데',pt:5,gd:1,gf:3}}]},
+  {g:'I',match:'세네갈 vs 이라크',sel:0,opts:[
+    {l:'무승부',t:{n:'세네갈',pt:1,gd:-3,gf:1}},
+    {l:'세네갈 승',t:{n:'세네갈',pt:3,gd:-2,gf:2}},
+    {l:'이라크 승',t:{n:'이라크',pt:3,gd:-5,gf:1}}]},
+  {g:'J',match:'알제리 최종전',sel:0,opts:[
+    {l:'알제리 패',t:{n:'알제리',pt:3,gd:-2,gf:2}},
+    {l:'무승부',t:{n:'알제리',pt:4,gd:-2,gf:2}},
+    {l:'알제리 승',t:{n:'오스트리아',pt:3,gd:0,gf:3}}]},
+  {g:'K',match:'콩고DR 최종전',sel:0,opts:[
+    {l:'콩고 패',t:{n:'콩고DR',pt:1,gd:-1,gf:1}},
+    {l:'무승부',t:{n:'콩고DR',pt:2,gd:-1,gf:1}},
+    {l:'콩고 승',t:{n:'콩고DR',pt:4,gd:0,gf:2}}]},
+  {g:'L',match:'크로아티아 최종전',sel:0,opts:[
+    {l:'크로 패',t:{n:'크로아티아',pt:3,gd:-1,gf:2}},
+    {l:'무승부',t:{n:'크로아티아',pt:4,gd:-1,gf:2}},
+    {l:'크로 승',t:{n:'가나',pt:4,gd:1,gf:2}}]},
 ];
-const KEY='wc-ladder-v1';
-let G=clone(DEFAULT);
-function clone(x){return JSON.parse(JSON.stringify(x))}
-async function load(){try{if(window.storage){const r=await window.storage.get(KEY);if(r&&r.value)G=JSON.parse(r.value);}}catch(e){}render();}
+const KR={pt:3,gd:-1,gf:2};
+const KEY='kr-sim-v1';
+const fmt=n=>n>0?('+'+n):(''+n);
+
+function rankCmp(a,b){return b.pt-a.pt||b.gd-a.gd||b.gf-a.gf;}
+function vsKR(t){
+  if(t.pt>KR.pt)return'above'; if(t.pt<KR.pt)return'below';
+  if(t.gd>KR.gd)return'above'; if(t.gd<KR.gd)return'below';
+  if(t.gf>KR.gf)return'above'; if(t.gf<KR.gf)return'below'; return'tie';
+}
+// 베스트=그 조 3위가 가장 낮은(한국에 유리한) 옵션
+function bestIdx(grp){let bi=0;grp.opts.forEach((o,i)=>{if(rankCmp(o.t,grp.opts[bi].t)>0)bi=i;});return bi;}
+function worstIdx(grp){let wi=0;grp.opts.forEach((o,i)=>{if(rankCmp(o.t,grp.opts[wi].t)<0)wi=i;});return wi;}
+function curThird(grp){return grp.lock?grp.third:grp.opts[grp.sel].t;}
+
+async function load(){
+  try{if(window.storage){const r=await window.storage.get(KEY);if(r&&r.value){const s=JSON.parse(r.value);
+    GROUPS.forEach(g=>{if(!g.lock&&s[g.g]!=null)g.sel=s[g.g];});}else setBest();}else setBest();}
+  catch(e){setBest();}
+  render();
+}
+function setBest(){GROUPS.forEach(g=>{if(!g.lock)g.sel=bestIdx(g);});}
 let flashT;
-async function save(){try{if(window.storage){await window.storage.set(KEY,JSON.stringify(G));flash('저장됨 ✓');}}catch(e){flash('이 세션에만 반영');}}
-function flash(m){const el=document.getElementById('saved');el.textContent=m;clearTimeout(flashT);flashT=setTimeout(()=>el.textContent='',1500)}
-function sortTeams(a){return [...a].sort((x,y)=>y.pt-x.pt||y.gd-x.gd||y.gf-x.gf)}
-function fmt(n){return n>0?('+'+n):(''+n)}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(){G.forEach(g=>g.teams=sortTeams(g.teams));renderLadder();renderDirect();renderGrid();}
-function renderDirect(){
-  const host=document.getElementById('direct');
-  let html='<div class="dtitle">✅ 이미 32강행 — 각 조 1·2위 직행<span>(✓ 진출 확정 / 나머지는 현재 1·2위)</span></div><div class="dgrid">';
-  G.forEach(grp=>{
-    const s=sortTeams(grp.teams);
-    const cells=s.slice(0,2).map(tm=>{
-      const ok=grp.done||tm.q==='in';
-      return `<span class="dteam ${ok?'ok':''}">${esc(tm.t)}${ok?' ✓':''}</span>`;
-    }).join('<i>·</i>');
-    html+=`<div class="drow"><span class="dgl">${grp.g}</span>${cells}</div>`;
-  });
-  host.innerHTML=html+'</div>';
+async function save(){
+  const s={};GROUPS.forEach(g=>{if(!g.lock)s[g.g]=g.sel;});
+  try{if(window.storage){await window.storage.set(KEY,JSON.stringify(s));flash('저장됨 ✓');}}catch(e){flash('이 세션만');}
 }
-function renderLadder(){
-  const thirds=G.map(g=>{const s=sortTeams(g.teams);return {...s[2],g:g.g,me:!!s[2].me};})
-    .sort((a,b)=>b.pt-a.pt||b.gd-a.gd||b.gf-a.gf||a.g.localeCompare(b.g));
-  const maxPt=Math.max(6,...thirds.map(t=>t.pt));
-  const lad=document.getElementById('ladder'); lad.innerHTML='';
-  thirds.forEach((t,i)=>{
-    if(i===8){
-      const c=document.createElement('div');c.className='cut';
-      c.innerHTML=`<span class="lbl">✂ 32강 컷 · 여기까지 8팀</span><span class="dash"></span>`;
-      lad.appendChild(c);
-    }
-    const cls=t.me?'me':(i<8?'safe':'below');
-    const w=Math.max(7,Math.round(t.pt/maxPt*100));
-    const row=document.createElement('div');row.className='lrow '+cls;
-    row.innerHTML=`<div class="lrk">${i+1}</div>
-      <div class="lname">${esc(t.t)}<span class="grp">${t.g}</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${w}%"></div></div>
-      <div class="lval">${t.pt}점 <span class="gd">${fmt(t.gd)}</span></div>`;
-    lad.appendChild(row);
-  });
+function flash(m){const e=document.getElementById('saved');e.textContent=m;clearTimeout(flashT);flashT=setTimeout(()=>e.textContent='',1400);}
+
+function render(){renderStatusLadder();renderMatches();}
+
+function renderStatusLadder(){
+  const thirds=GROUPS.map(g=>{const t=curThird(g);return{...t,g:g.g,me:!!t.me};})
+    .sort((a,b)=>rankCmp(a,b)||a.g.localeCompare(b.g));
   const meRank=thirds.findIndex(x=>x.me)+1;
-  const me=thirds.find(x=>x.me);
-  const inZone=meRank<=8, cushion=8-meRank;
-  const p=document.getElementById('punch');
-  if(inZone){
-    p.innerHTML=`한 줄 요약 — <b class="k">한국은 지금 ${meRank}위(${me.pt}점·${fmt(me.gd)})로 안전권</b>. F·D조 등 다른 조에서 한국보다 나은 3위가 <b>${cushion}팀</b> 더 나오면 그때 컷 밖으로 밀린다.`;
-  }else{
-    p.innerHTML=`한 줄 요약 — <b class="out">한국 ${meRank}위로 컷 밖(탈락권)</b>. 8위 ${esc(thirds[7].t)}(${thirds[7].pt}점·${fmt(thirds[7].gd)})를 넘어서는 다른 조 결과가 나와야 산다.`;
-  }
+  const inZone=meRank<=8, above=meRank-1, cushion=8-meRank;
+  const st=document.getElementById('status');
+  st.className='status '+(inZone?'in':'out');
+  st.innerHTML=`<div class="row">
+      <span class="verdict">${inZone?'🟢 진출':'🔴 탈락'}</span>
+      <span class="rk">한국 <b>${meRank}위</b> / 3위 12팀 중</span>
+    </div>
+    <div class="desc">${inZone
+      ?`한국 위로 <b>${above}팀</b>. 컷(8위)까지 여유 <b>${cushion}팀</b> — 여기에 ${cushion}팀이 더 치고 올라오면 탈락.`
+      :`한국이 컷(8위) 밖. 위에 <b>${above}팀</b>이라 8자리를 넘겼다. 다른 조 결과가 더 풀려야 산다.`}</div>`;
+  const maxpt=Math.max(...thirds.map(t=>t.pt),4);
+  const lad=document.getElementById('ladder');lad.innerHTML='';
+  thirds.forEach((t,i)=>{
+    if(i===8){const c=document.createElement('div');c.className='cut';
+      c.innerHTML='<span class="l">✂ 32강 컷 · 8팀</span><span class="d"></span>';lad.appendChild(c);}
+    const cls=t.me?'me':(i<8?'safe':'below');
+    const w=Math.max(8,Math.round(t.pt/maxpt*100));
+    const r=document.createElement('div');r.className='lrow '+cls;
+    r.innerHTML=`<div class="lrk">${i+1}</div><div class="lname">${t.n}<span class="g">${t.g}</span></div>
+      <div class="track"><div class="fill" style="width:${w}%"></div></div>
+      <div class="lval">${t.pt} <span class="gd">${fmt(t.gd)}</span></div>`;
+    lad.appendChild(r);
+  });
 }
-function renderGrid(){
-  const grid=document.getElementById('grid');grid.innerHTML='';
-  G.forEach((grp,gi)=>{
-    let rows='';
-    grp.teams.forEach((tm,i)=>{
-      const pos=i+1,cls=tm.me?'me':('p'+pos),flag=tm.me?'🇰🇷 ':'';
-      let tag=tm.me?'<span class="qtag me">MY</span>':(grp.done?(pos<=2?'<span class="qtag in">✓확정</span>':(pos===4?'<span class="qtag out">탈락</span>':'')):'');
-      rows+=`<tr class="${cls}"><td class="pos"><span class="rkn">${pos}</span></td>
-        <td><input class="team" value="${esc(tm.t)}" data-g="${gi}" data-i="${i}" data-k="t">${tag}</td>
-        <td class="c"><input class="num pts" type="number" inputmode="numeric" value="${tm.pt}" data-g="${gi}" data-i="${i}" data-k="pt"></td>
-        <td class="c"><input class="num" type="number" inputmode="numeric" value="${tm.gd}" data-g="${gi}" data-i="${i}" data-k="gd"></td>
-        <td class="c"><input class="num" type="number" inputmode="numeric" value="${tm.gf}" data-g="${gi}" data-i="${i}" data-k="gf"></td></tr>`;
+
+function renderMatches(){
+  const host=document.getElementById('matches');host.innerHTML='';
+  GROUPS.filter(g=>!g.lock).forEach(grp=>{
+    const sel=grp.opts[grp.sel], rel=vsKR(sel.t);
+    const relTxt=rel==='above'?'🔴 한국 위':rel==='below'?'🟢 한국 아래':'🟡 한국과 동률';
+    let opts='';
+    grp.opts.forEach((o,i)=>{
+      const on=i===grp.sel;
+      const r=vsKR(o.t);
+      const onCls=on?('on '+(r==='above'?'aboveSel':r==='below'?'belowSel':'tieSel')):'';
+      opts+=`<button class="opt ${onCls}" data-g="${grp.g}" data-i="${i}">${o.l}</button>`;
     });
-    const card=document.createElement('div');card.className='card';
-    card.innerHTML=`<div class="card-h"><span class="gl">${grp.g}</span><span class="ti">${grp.g}조</span>
-      <button class="donebtn ${grp.done?'on':''}" data-done="${gi}">${grp.done?'✓ 종료':'진행중'}</button></div>
-      <table><thead><tr><th style="width:24px"></th><th class="l">팀</th><th>승점</th><th>득실</th><th>득점</th></tr></thead>
-      <tbody>${rows}</tbody></table>`;
-    grid.appendChild(card);
+    const card=document.createElement('div');card.className='mc';
+    card.innerHTML=`<div class="mc-top"><span class="gbadge">${grp.g}</span>
+      <span class="mtitle">${grp.match}</span>
+      <span class="res ${rel}">→ ${sel.t.n} ${sel.t.pt}점·${fmt(sel.t.gd)} · ${relTxt}</span></div>
+      <div class="opts">${opts}</div>`;
+    host.appendChild(card);
   });
-  bind();
-}
-function bind(){
-  document.querySelectorAll('#grid input').forEach(inp=>{
-    inp.addEventListener('change',e=>{
-      const gi=+e.target.dataset.g,i=+e.target.dataset.i,k=e.target.dataset.k;
-      let v=e.target.value;if(k!=='t'){v=parseInt(v,10);if(isNaN(v))v=0;}
-      G[gi].teams[i][k]=v;save();render();
+  host.querySelectorAll('.opt').forEach(b=>{
+    b.addEventListener('click',e=>{
+      const g=e.target.dataset.g,i=+e.target.dataset.i;
+      const grp=GROUPS.find(x=>x.g===g);grp.sel=i;save();render();
     });
   });
-  document.querySelectorAll('.donebtn').forEach(b=>{
-    b.addEventListener('click',e=>{const gi=+e.target.dataset.done;G[gi].done=!G[gi].done;save();render();});
-  });
 }
-document.getElementById('reset').addEventListener('click',()=>{G=clone(DEFAULT);save();render();flash('초기화됨');});
+
+document.getElementById('pBest').addEventListener('click',()=>{GROUPS.forEach(g=>{if(!g.lock)g.sel=bestIdx(g);});save();render();flash('베스트 적용');});
+document.getElementById('pWorst').addEventListener('click',()=>{GROUPS.forEach(g=>{if(!g.lock)g.sel=worstIdx(g);});save();render();flash('최악 적용');});
 load();
 </script>
 </body>

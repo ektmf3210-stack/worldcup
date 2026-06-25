@@ -69,6 +69,10 @@
     border-left:3px solid var(--blue-bar);border-radius:9px;padding:9px 12px;margin:0 0 10px;line-height:1.55}
   .tip b{color:var(--ink)}
   .matches{display:flex;flex-direction:column;gap:10px}
+  .wave{font-family:var(--mono);font-size:11.5px;font-weight:800;color:var(--ink-2);
+    margin:8px 2px 0;letter-spacing:.02em;display:flex;align-items:center;gap:9px}
+  .wave::after{content:"";flex:1;height:0;border-top:1px solid var(--line)}
+  .wave:first-child{margin-top:0}
   .mc{border:1px solid var(--line);border-radius:13px;background:var(--card);box-shadow:var(--shadow);padding:12px 14px}
   .mc-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
   .gbadge{font-family:var(--mono);font-weight:800;font-size:11px;width:22px;height:22px;line-height:22px;
@@ -93,6 +97,8 @@
     border:1px solid var(--line);background:#fff;color:var(--ink-2);text-align:center;transition:.12s}
   .mopt:hover{border-color:var(--muted)}
   .mopt.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .nomar{margin-top:8px;padding-top:9px;border-top:1px dashed var(--line);
+    font-size:11.5px;color:var(--muted);line-height:1.5}
   .foot{margin-top:20px;font-size:11px;color:var(--muted);line-height:1.7}
   .foot b{color:var(--ink-2)}
   @media (max-width:520px){.lrow{grid-template-columns:20px 84px 1fr auto}.lname{font-size:12px}}
@@ -103,7 +109,7 @@
   <div class="eyebrow">2026 월드컵 · 한국 32강 시뮬레이터 (점수차판)</div>
   <h1>버튼 눌러서 한국 운명 굴려보기 <span class="dim">🇰🇷</span></h1>
   <p class="sub">한국은 A조 3위(승점 3·골득실 −1·2득점). 12개 조 3위 중 <b>위 8팀</b>만 32강. 경기 <b>승·무·패 + 점수차</b>까지 눌러보면 한국 운명이 실시간으로 바뀐다. 처음 세팅은 <b>한국 베스트</b>.</p>
-  <div class="glos">📖 <b>승점</b> = 이기면 3점·비기면 1점·지면 0점 누적 &nbsp;|&nbsp; <b>골득실</b> = 넣은 골 − 먹은 골. <b>한국 = 3점·−1.</b> 다른 조 3위가 이 선을 넘으면 한국이 한 칸 밀린다.</div>
+  <div class="glos">📖 <b>승점</b> = (축구 규칙상) 이기면 3점·비기면 1점·지면 0점 누적 &nbsp;|&nbsp; <b>골득실</b> = 지금까지 넣은 골 − 먹은 골. <b>한국 = 3점·−1.</b> 다른 조 3위가 이 선을 넘으면 한국이 한 칸 밀린다.</div>
 
   <div class="status" id="status"></div>
 
@@ -200,7 +206,7 @@ function render(){renderStatusLadder();renderMatches();}
 
 function renderStatusLadder(){
   const thirds=GROUPS.map(g=>{const t=curThird(g);return{...t,g:g.g,me:!!t.me};})
-    .sort((a,b)=>rankCmp(a,b)||a.g.localeCompare(b.g));
+    .sort((a,b)=>rankCmp(a,b)|| (a.me?1:b.me?-1:a.g.localeCompare(b.g)));
   const meRank=thirds.findIndex(x=>x.me)+1;
   const inZone=meRank<=8, above=meRank-1, cushion=8-meRank;
   const st=document.getElementById('status');
@@ -210,7 +216,7 @@ function renderStatusLadder(){
       <span class="rk">한국 <b>${meRank}위</b> / 3위 12팀 중</span>
     </div>
     <div class="desc">${inZone
-      ?`한국 위로 <b>${above}팀</b>. 컷(8위)까지 여유 <b>${cushion}팀</b> — 여기에 ${cushion}팀이 더 치고 올라오면 탈락.`
+      ?`한국 위로 <b>${above}팀</b>. 컷(8위)까지 ${cushion===0?'<b>여유 없음</b> — 한 팀만 더 올라와도 탈락권':`여유 <b>${cushion}팀</b> — 여기에 ${cushion+1}팀이 더 치고 올라오면 탈락`}.`
       :`한국이 컷(8위) 밖. 위에 <b>${above}팀</b>이라 8자리를 넘겼다. 다른 조 결과가 더 풀려야 산다.`}</div>`;
   const maxpt=Math.max(...thirds.map(t=>t.pt),4);
   const lad=document.getElementById('ladder');lad.innerHTML='';
@@ -229,7 +235,10 @@ function renderStatusLadder(){
 
 function renderMatches(){
   const host=document.getElementById('matches');host.innerHTML='';
-  GROUPS.filter(g=>!g.lock).forEach(grp=>{
+  const undecided=GROUPS.filter(g=>!g.lock);
+  const waves={0:'⏱ 먼저 끝나는 조 · D · E · F',3:'⏱ 그다음 · G · H · I',6:'⏱ 마지막 · J · K · L'};
+  undecided.forEach((grp,idx)=>{
+    if(waves[idx]){const d=document.createElement('div');d.className='wave';d.textContent=waves[idx];host.appendChild(d);}
     const opt=grp.opts[grp.sel], sel=opt.t(grp.mar||1), rel=vsKR(sel);
     const relTxt=rel==='above'?'🔴 한국 위':rel==='below'?'🟢 한국 아래':'🟡 한국과 동률';
     let opts='';
@@ -244,6 +253,11 @@ function renderMatches(){
       let mo='';
       [1,2,3].forEach(v=>{ mo+=`<button class="mopt ${(grp.mar||1)===v?'on':''}" data-g="${grp.g}" data-m="${v}">${labs[v-1]}</button>`; });
       marginRow=`<div class="margin"><span class="lab">이긴 쪽 골차</span><div class="mopts">${mo}</div></div>`;
+    }else{
+      const why = opt.l==='무승부'
+        ? `무승부라 골차 개념이 없어 — 3위는 ${sel.n}로 굳어짐.`
+        : `이 결과에선 3위가 ${sel.n}로 고정 — 골차가 순위에 영향을 안 줘서 버튼을 숨겼어.`;
+      marginRow=`<div class="nomar">💬 ${why}</div>`;
     }
     const card=document.createElement('div');card.className='mc';
     card.innerHTML=`<div class="mc-top"><span class="gbadge">${grp.g}</span>
